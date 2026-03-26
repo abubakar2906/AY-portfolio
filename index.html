@@ -88,6 +88,55 @@
 
     .nav-links a:hover { color: var(--text); }
 
+    /* Mobile Menu Toggle */
+    .nav-toggle {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      z-index: 1000;
+      color: var(--accent);
+    }
+
+    .nav-toggle svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    /* Mobile Nav Overlay */
+    .mobile-nav {
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      z-index: 900;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+      padding: 48px;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+      transform: translateY(-20px);
+    }
+
+    .mobile-nav.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .mobile-nav a {
+      font-family: var(--mono);
+      font-size: 24px;
+      color: var(--text);
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
     /* ─── HERO ─── */
     #hero {
       min-height: 100vh;
@@ -584,17 +633,30 @@
       .contact-left { padding: 80px 24px; border-right: none; border-bottom: 1px solid var(--border); }
       .contact-right { padding: 80px 24px; }
 
-      footer { padding: 20px 24px; flex-direction: column; gap: 8px; text-align: center; }
+      .hero-bg-text { font-size: 80px; bottom: 10px; right: 10px; }
 
-      .hero-bg-text { font-size: 80px; }
+      .stack-grid { grid-template-columns: 1fr; }
+      
+      .hero-actions { flex-direction: column; align-items: stretch; gap: 12px; }
+      .btn-primary, .btn-ghost { justify-content: center; width: 100%; }
 
-      .stack-grid { grid-template-columns: 1fr 1fr; }
+      .hero-bottom { flex-direction: column; gap: 24px; align-items: flex-start; }
+      .hero-contacts { flex-direction: column; gap: 12px; align-items: flex-start; }
+      .hero-contacts a { border-bottom: 1px solid var(--border); padding-bottom: 4px; display: block; width: 100%; }
+
+      .nav-toggle { display: block; }
+      
+      .contact-big { font-size: 42px; margin-bottom: 24px; }
+      
+      h1 { font-size: 48px; }
+      .hero-desc { font-size: 13px; max-width: 100%; }
+      
+      .section-header { flex-direction: column; gap: 8px; margin-bottom: 48px; }
     }
   </style>
 </head>
 <body>
 
-  <!-- NAV -->
   <nav>
     <a class="nav-logo" href="#hero">AY.dev</a>
     <ul class="nav-links">
@@ -602,7 +664,20 @@
       <li><a href="#projects">Projects</a></li>
       <li><a href="#contact">Contact</a></li>
     </ul>
+    <button class="nav-toggle" id="menuToggle" aria-label="Toggle Menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <line x1="3" y1="18" x2="21" y2="18"></line>
+      </svg>
+    </button>
   </nav>
+
+  <div class="mobile-nav" id="mobileNav">
+    <a href="#stack">Stack</a>
+    <a href="#projects">Projects</a>
+    <a href="#contact">Contact</a>
+  </div>
 
   <!-- HERO -->
   <section id="hero">
@@ -807,6 +882,28 @@
       document.querySelector('.hero-inner').style.opacity = '1';
       document.querySelector('.hero-inner').style.transform = 'translateY(0)';
     }, 100);
+
+    // Mobile Menu Toggle
+    const menuToggle = document.getElementById('menuToggle');
+    const mobileNav = document.getElementById('mobileNav');
+    const mobileLinks = mobileNav.querySelectorAll('a');
+
+    menuToggle.addEventListener('click', () => {
+      mobileNav.classList.toggle('active');
+      const isActive = mobileNav.classList.contains('active');
+      menuToggle.innerHTML = isActive 
+        ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>'
+        : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>';
+      document.body.style.overflow = isActive ? 'hidden' : '';
+    });
+
+    mobileLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        mobileNav.classList.remove('active');
+        menuToggle.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>';
+        document.body.style.overflow = '';
+      });
+    });
   </script>
 </body>
 </html>
